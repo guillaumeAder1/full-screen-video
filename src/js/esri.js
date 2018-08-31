@@ -1,33 +1,4 @@
 
-function EsriWrapper() {
-
-    var _map = "jojojo";
-
-    var def = function () {
-        return (function () {
-            require(["dojo/Deferred"], function (Deferred) {
-                return Deferred;
-            })
-        })()
-    }
-    var init = function () {
-        setTimeout(function () {
-
-        }, 150)
-        return def.promise;
-
-    }
-
-    return {
-        map: _map,
-        start: init
-    }
-
-}
-
-
-
-
 /**
  * simulate a JSOn config file
  */
