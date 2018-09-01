@@ -1,9 +1,12 @@
 
+
 function FullScreenControl(onLeft, onRight) {
 
-    panels = [];
+    this.panels = panels = [];
+    var defaultCss = { position: "absolute", height: "100%", top: "0", zIndex: "999" }
     onLeft && panels.push(onLeft)
     onRight && panels.push(onRight)
+
 
     var checkMousePosition = function (e) {
         panels.forEach(function (element) {
@@ -40,11 +43,11 @@ function FullScreenControl(onLeft, onRight) {
         var mouseDiff = panel.intWidth - mousex;
         var calcDiff = (-panel.intWidth) + mouseDiff;
         panel.node.style.left = calcDiff + 'px';
-        console.log('display panel **************************')
-        console.log('mouseX', mousex)
-        console.log('panel.left', panel.node.style.left)
-        console.log('diff', mouseDiff)
-        console.log('new left pos', calcDiff)
+        // console.log('display panel **************************')
+        // console.log('mouseX', mousex)
+        // console.log('panel.left', panel.node.style.left)
+        // console.log('diff', mouseDiff)
+        // console.log('new left pos', calcDiff)
 
     }
 
@@ -57,45 +60,49 @@ function FullScreenControl(onLeft, onRight) {
         }, this)
     }
 
+    var createDomPanel = function (initPos, destPos, panel) {
+        var newDiv = document.createElement("div");
+        Object.assign(newDiv.style, panel.style, defaultCss)
+        newDiv.innerHTML = panel.html;
+        newDiv.style.left = initPos;
+        panel.node = newDiv;
+        document.getElementsByTagName("body")[0].appendChild(newDiv);
+        newDiv.addEventListener('click', function (e) {
+            panel.locked = !panel.locked;
+            if (panel.locked) {
+                panel.node.style.left = destPos;
+            }
+            console.log(panel.locked)
+        });
+    }
     var create = function (panel) {
         if (panel.position === 'left') {
-            var negVal = "-" + panel.width;
-            var newDiv = document.createElement("div");
-            Object.assign(newDiv.style, panel.style, { position: "absolute", height: "100%", top: "0", zIndex: "999" });
-            newDiv.innerHTML = panel.html;
-            newDiv.style.left = negVal;
-            //
-            panel.node = newDiv
-            var t = document.getElementsByTagName("body")[0].appendChild(newDiv);
-            newDiv.addEventListener('click', function (e) {
-                panel.locked = !panel.locked;
-                console.log(panel.locked)
-                if (panel.locked) { panel.node.style.left = 0; }
-            });
+            var initpos = "-" + panel.width;
+            var destpos = 0;
+            createDomPanel(initpos, destpos, panel);
             return;
         }
         if (panel.position === 'right') {
-            var newDiv = document.createElement("div");
-            Object.assign(newDiv.style, panel.style, { position: "absolute", height: "100%", top: "0", zIndex: "999" })
-            newDiv.innerHTML = panel.html;
-            newDiv.style.left = window.innerWidth;
-            panel.node = newDiv
-            var t = document.getElementsByTagName("body")[0].appendChild(newDiv);
-            newDiv.addEventListener('click', function (e) {
-                panel.locked = !panel.locked;
-                console.log(panel.locked)
-                if (panel.locked) { panel.node.style.left = window.innerWidth - panel.intWidth; }
-            });
+            var initpos = window.innerWidth;
+            var destpos = window.innerWidth - panel.intWidth;
+            createDomPanel(initpos, destpos, panel);
             return;
         }
     }
 
-    initPanel(panels);
-    document.addEventListener("mousemove", checkMousePosition);
+    var screenResize = function (e) {
+        console.log(e);
+    }
 
-    // return {
-    //     panels: panels
-    // }
+    /**
+     * priviledge method, access to private members
+     */
+    this.startup = function () {
+        initPanel(panels);
+        document.addEventListener("mousemove", checkMousePosition);
+        window.addEventListener("resize", screenResize);
+    }
 
+    return this;
 
 }
