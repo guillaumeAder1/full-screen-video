@@ -92,6 +92,15 @@ function FullScreenControl(onLeft, onRight) {
 
     var screenResize = function (e) {
         console.log(e);
+        this.panels.forEach(function (item) {
+            destroyPanel(item.node)
+        }, this)
+        initPanel(this.panels)
+
+    }
+
+    var destroyPanel = function (node) {
+        node.parentNode.removeChild(node);
     }
 
     /**
