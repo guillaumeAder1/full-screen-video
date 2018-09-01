@@ -8,16 +8,53 @@
 
     <!-- Custom ESRI -->
     <link rel="stylesheet" href="./css/style.css">
-    <!-- <script src="./js/esri.js"></script> -->
     <script src="./js/video.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 
 </head>
 
 <body class="claro">
+    <div id="fullScreen"> Press F11 </div>
+    <template class="playlistContainer">
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">small</h5>
+                    <small>1 day ago</small>
+                </div>
+                <p class="mb-1">Donec id elit non</p>
+                <small> id elit mi orta.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">elephants</h5>
+                    <small class="text-muted">4 days ago</small>
+                </div>
+                <p class="mb-1">Donec isus varius blandit.</p>
+                <small class="text-muted">Donec id elit non mi porta.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">big buck</h5>
+                    <small class="text-muted">10 days ago</small>
+                </div>
+                <p class="mb-1">Donec id elit on mit.</p>
+                <small class="text-muted">Donec id ta.</small>
+            </a>
+        </div>
+    </template>
     <div class="container">
         <!-- <div id="player">
         </div> -->
-        <video id="player" src="http://video.webmfiles.org/big-buck-bunny_trailer.webm" controls autoplay loop></video>
+        <!-- 
+            http://techslides.com/demos/sample-videos/small.webm
+            http://dl3.webmfiles.org/elephants-dream.webm
+            http://video.webmfiles.org/big-buck-bunny_trailer.webm
+        -->
+        <!-- <video id="player" src="http://video.webmfiles.org/big-buck-bunny_trailer.webm" controls autoplay loop></video> -->
+        <video id="player" src="http://techslides.com/demos/sample-videos/small.webm" controls autoplay loop></video>
     </div>
 </body>
 
@@ -25,61 +62,51 @@
     #player {
         width: 100%;
         height: 100%;
-        /* overflow: hidden; */
+        overflow: hidden;
     }
 </style>
 
 
 <!-- External code -->
 <script>
+    var getTemplate = document.querySelector('template.playlistContainer').content.querySelector('div.list-group');
+    var template = document.importNode(getTemplate, true);
     var panel = new FullScreenControl({
-            position: "left",
-            width: '350px',
-            html: '<h1>Panel left</h1>',
-            style: {
-                backgroundColor: "grey",
-                textAlign: "center"
+                position: "left",
+                width: '350px',
+                html: template,
+                style: {
+                    backgroundColor: "grey",
+                    textAlign: "center"
+                }
+            }, {
+                position: "right",
+                width: '250px',
+                html: template,
+                style: {
+                    backgroundColor: "lightgray",
+                    textAlign: "center"
+
+                }
             }
-        }, {
-            position: "right",
-            width: '250px',
-            html: '<h1>Panel Right</h1>',
-            style: {
-                backgroundColor: "red",
-                textAlign: "center"
 
-            }
-        }
+        ) //.startup();
 
-    ).startup();
 
-    document.addEventListener("fullscreenChange", function() {
-        if (fullscreenElement != null) {
-            console.info("Went full screen");
+
+
+    window.onresize = function(event) {
+        var maxHeight = window.screen.height,
+            maxWidth = window.screen.width,
+            curHeight = window.innerHeight,
+            curWidth = window.innerWidth;
+
+        if (maxWidth == curWidth && maxHeight == curHeight) {
+            panel.startup()
         } else {
-            console.info("Exited full screen");
+            panel.hide()
         }
-    });
-
-    // // 2. This code loads the IFrame Player API code asynchronously.
-    // var tag = document.createElement('script');
-
-    // tag.src = "https://www.youtube.com/iframe_api";
-    // var firstScriptTag = document.getElementsByTagName('script')[0];
-    // firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    // // 3. This function creates an <iframe> (and YouTube player)
-    // //    after the API code downloads.
-    // var player;
-
-    // function onYouTubeIframeAPIReady() {
-    //     player = new YT.Player('player', {
-    //         height: window.innerHeight / 2,
-    //         width: window.innerWidth / 2,
-    //         videoId: 'M7lc1UVf-VE',
-
-    //     });
-    // }
+    }
 </script>
 
 </html>

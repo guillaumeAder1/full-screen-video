@@ -3,7 +3,7 @@
 function FullScreenControl(onLeft, onRight) {
 
     this.panels = panels = [];
-    var defaultCss = { position: "absolute", height: "100%", top: "0", zIndex: "9999999999999" }
+    var defaultCss = { position: "absolute", height: "100%", top: "0", zIndex: "9999999999" }
     var bodyDom = document.getElementsByTagName("body")[0];
     onLeft && panels.push(onLeft)
     onRight && panels.push(onRight)
@@ -64,6 +64,7 @@ function FullScreenControl(onLeft, onRight) {
             panel.intWidth = panel.width.replace('px', '')
             panel.style.width = panel.width
             panel.locked = false;
+            panel.visible = true;
             create(panel)
         }, this)
     }
@@ -80,7 +81,7 @@ function FullScreenControl(onLeft, onRight) {
         var newDiv = document.createElement("div");
         // apply css to panel
         Object.assign(newDiv.style, panel.style, defaultCss)
-        newDiv.innerHTML = panel.html;
+        newDiv.appendChild(panel.html);
         newDiv.style.left = initPos;
         panel.node = newDiv;
         bodyDom.appendChild(newDiv);
@@ -94,7 +95,7 @@ function FullScreenControl(onLeft, onRight) {
         });
     }
     /**
-     * 
+     * calculate inital and destination value for each panel based on their params
      * @param {panel} panel panel data
      */
     var create = function (panel) {
@@ -115,13 +116,20 @@ function FullScreenControl(onLeft, onRight) {
      * when screen size change, destroy previous and re-create new panels with correct positions
      * @param {event} e ScreenResize event
      */
-    var screenResize = function (e) {
+    var screenResize = function (bool) {
         this.panels.forEach(function (item) {
             destroyPanel(item.node);
         }, this)
-        initPanel(this.panels);
+        bool && initPanel(this.panels);
 
     }
+
+    this.hide = function () {
+        screenResize(false)
+    }
+
+
+
     /**
      * 
      * @param {panel.HTMLnode} node - html node to de destroyed 
@@ -136,7 +144,7 @@ function FullScreenControl(onLeft, onRight) {
     this.startup = function () {
         initPanel(panels);
         document.addEventListener("mousemove", checkMousePosition);
-        window.addEventListener("resize", screenResize);
+        window.addEventListener("resize", screenResize(true));
     }
 
     return this;
