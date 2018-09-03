@@ -19,29 +19,37 @@
     <div id="fullScreen"> Press F11 </div>
     <template class="playlistContainer">
         <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+            <a onclick="changeSource(0)" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">small</h5>
+                    <h5 class="mb-1">Small</h5>
                     <small>1 day ago</small>
                 </div>
-                <p class="mb-1">Donec id elit non</p>
-                <small> id elit mi orta.</small>
+                <p class="mb-1 float-left">Donec id elit on mit.</p>
+                <small class="text-muted float-left">Donec id ta.</small>
             </a>
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a onclick="changeSource(1)" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">elephants</h5>
+                    <h5 class="mb-1">Elephants</h5>
                     <small class="text-muted">4 days ago</small>
                 </div>
-                <p class="mb-1">Donec isus varius blandit.</p>
-                <small class="text-muted">Donec id elit non mi porta.</small>
+                <p class="mb-1 float-left">Donec id elit on mit.</p>
+                <small class="text-muted float-left">Donec id ta.</small>
             </a>
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a onclick="changeSource(2)" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">big buck</h5>
+                    <h5 class="mb-1">Big Duck</h5>
                     <small class="text-muted">10 days ago</small>
                 </div>
-                <p class="mb-1">Donec id elit on mit.</p>
-                <small class="text-muted">Donec id ta.</small>
+                <p class="mb-1 float-left">Donec id elit on mit.</p>
+                <small class="text-muted float-left">Donec id ta.</small>
+            </a>
+            <a onclick="changeSource(3)" href="#" class="float-left list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Sintel</h5>
+                    <small class="text-muted">40 days ago</small>
+                </div>
+                <p class="mb-1 float-left">Donec id elit on mit.</p>
+                <small class="text-muted float-left">Donec id ta.</small>
             </a>
         </div>
     </template>
@@ -59,62 +67,89 @@
 </body>
 
 <style>
-    #player {
+    #player.full {
         width: 100%;
         height: 100%;
         overflow: hidden;
     }
+    /* #player {
+        width: 450px;
+        height: 250px;
+    } */
 </style>
 
 
 <!-- External code -->
 <script>
+    var videos = [
+        "http://techslides.com/demos/sample-videos/small.webm",
+        "http://dl3.webmfiles.org/elephants-dream.webm",
+        "http://video.webmfiles.org/big-buck-bunny_trailer.webm",
+        "http://media.w3.org/2010/05/sintel/trailer.webm"
+    ]
+
+    function changeSource(index) {
+        player.src = videos[index]
+    }
+
+
+
     var getTemplate = document.querySelector('template.playlistContainer').content.querySelector('div.list-group');
     var template = document.importNode(getTemplate, true);
-    var panel = new FullScreenControl({
-                position: "left",
-                width: '350px',
-                html: template,
-                style: {
-                    backgroundColor: "grey",
-                    textAlign: "center"
-                }
-            }, {
-                position: "right",
-                width: '250px',
-                html: template,
-                style: {
-                    backgroundColor: "lightgray",
-                    textAlign: "center"
-
-                }
-            }
-
-        ) //.startup();
+    var panel = new FullScreenControl(false, {
+        position: "right",
+        width: '250px',
+        html: template,
+        style: {
+            backgroundColor: "lightgray",
+            textAlign: "center"
+        }
+    });
 
     var full = false
     var player = document.querySelector('#player')
-    player.addEventListener('webkitfullscreenchange', function(e) {
+
+
+    document.querySelector('#fullScreen').addEventListener('click', function() {
         full = !full;
         if (full) {
+            getFullScreen()
+            player.classList.add('full')
             panel.startup()
-            player.style.zIndex = "0 !important"
+            player.style.background = "black"
+
         } else {
-            panel.hide();
+            exitFullscreen()
+            player.classList.remove('full')
+            player.style.background = "transparent"
+            panel.hide()
+
         }
-    })
+    });
 
-    window.onresize = function(event) {
-        // var maxHeight = window.screen.height,
-        //     maxWidth = window.screen.width,
-        //     curHeight = window.innerHeight,
-        //     curWidth = window.innerWidth;
+    function getFullScreen() {
+        var docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        } else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        } else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        } else if (docElm.msRequestFullscreen) {
+            docElm.msRequestFullscreen();
+        }
+    }
 
-        // if (maxWidth == curWidth && maxHeight == curHeight) {
-        //     panel.startup()
-        // } else {
-        //     panel.hide()
-        // }
+    function exitFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
     }
 </script>
 
