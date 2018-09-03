@@ -19,3 +19,10 @@ body,
     position: fixed;
     background: lightgray;
 }
+
+#fullScreen {
+    position: fixed;
+    top: 10;
+    left: 10;
+    z-index: 99999;
+}
