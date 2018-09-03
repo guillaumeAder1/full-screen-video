@@ -3,7 +3,7 @@
 function FullScreenControl(onLeft, onRight) {
 
     this.panels = panels = [];
-    var defaultCss = { position: "absolute", height: "100%", top: "0", zIndex: "9999999999" }
+    var defaultCss = { position: "absolute", height: "100%", top: "0", zIndex: "2147483647 !important" }
     var bodyDom = document.getElementsByTagName("body")[0];
     onLeft && panels.push(onLeft)
     onRight && panels.push(onRight)
@@ -44,6 +44,7 @@ function FullScreenControl(onLeft, onRight) {
         var mouseDiff = mousex - (window.innerWidth - panel.intWidth);
         var calcDiff = window.innerWidth - mouseDiff;
         panel.node.style.left = calcDiff + "px";
+        panel.node.style.zIndex = "2147483647";
     }
     /**
     * calculate left panel pos depending of mousex
@@ -62,10 +63,10 @@ function FullScreenControl(onLeft, onRight) {
     var initPanel = function (panels) {
         panels.forEach(function (panel) {
             panel.intWidth = panel.width.replace('px', '')
-            panel.style.width = panel.width
+            panel.style.width = panel.width;
             panel.locked = false;
             panel.visible = true;
-            create(panel)
+            create(panel);
         }, this)
     }
 
@@ -80,10 +81,11 @@ function FullScreenControl(onLeft, onRight) {
     var createDomPanel = function (initPos, destPos, panel) {
         var newDiv = document.createElement("div");
         // apply css to panel
-        Object.assign(newDiv.style, panel.style, defaultCss)
+        Object.assign(newDiv.style, panel.style, defaultCss);
         newDiv.appendChild(panel.html);
         newDiv.style.left = initPos;
         panel.node = newDiv;
+        // bodyDom.insertAdjacentElement('afterbegin', newDiv);
         bodyDom.appendChild(newDiv);
         // add event on click panel
         newDiv.addEventListener('click', function (e) {
@@ -91,7 +93,7 @@ function FullScreenControl(onLeft, onRight) {
             if (panel.locked) {
                 panel.node.style.left = destPos;
             }
-            console.log(panel.locked)
+            console.log(panel.locked);
         });
     }
     /**

@@ -92,20 +92,29 @@
 
         ) //.startup();
 
-
-
+    var full = false
+    var player = document.querySelector('#player')
+    player.addEventListener('webkitfullscreenchange', function(e) {
+        full = !full;
+        if (full) {
+            panel.startup()
+            player.style.zIndex = "0 !important"
+        } else {
+            panel.hide();
+        }
+    })
 
     window.onresize = function(event) {
-        var maxHeight = window.screen.height,
-            maxWidth = window.screen.width,
-            curHeight = window.innerHeight,
-            curWidth = window.innerWidth;
+        // var maxHeight = window.screen.height,
+        //     maxWidth = window.screen.width,
+        //     curHeight = window.innerHeight,
+        //     curWidth = window.innerWidth;
 
-        if (maxWidth == curWidth && maxHeight == curHeight) {
-            panel.startup()
-        } else {
-            panel.hide()
-        }
+        // if (maxWidth == curWidth && maxHeight == curHeight) {
+        //     panel.startup()
+        // } else {
+        //     panel.hide()
+        // }
     }
 </script>
 
