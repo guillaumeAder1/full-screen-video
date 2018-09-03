@@ -125,6 +125,14 @@
         height: 100%;
         overflow: hidden;
     }
+    
+    #fullScreen {
+        position: fixed;
+        top: 10;
+        right: 10;
+        left: auto;
+        z-index: 99999;
+    }
 </style>
 
 
@@ -142,11 +150,11 @@
     }
 
 
-
+    // use <template>
     var getTemplate = document.querySelector('template.playlistContainer').content.querySelector('div.list-group');
     var template = document.importNode(getTemplate, true);
-    var panel = new FullScreenControl(false, {
-        position: "right",
+    var panel = new FullScreenControl({
+        position: "left",
         width: '250px',
         html: template,
         style: {
@@ -157,7 +165,11 @@
 
 
     /**
-     * hack to do fullscreen
+     * hack to do fullscreen, by default, using the media element fullscreen button 
+     * will override CSS to use zINdex max value for the player, even if I can make the 
+     * panel visible, the mouse event are made on the video element and not delegated to
+     * other Dom Elements, so no interaction...
+     * TODO more investigation... 
      * */
     var full = false
     var player = document.querySelector('#player');

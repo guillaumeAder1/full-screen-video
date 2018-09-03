@@ -8,6 +8,14 @@ function FullScreenControl(onLeft, onRight) {
     onLeft && panels.push(onLeft)
     onRight && panels.push(onRight)
 
+
+    /**
+     * define css property for panel animation
+     */
+    var addCustomCss = function () {
+        // TODO, for now use the loca CSS file
+    }
+
     /**
      * 
      * @param {Event} e mouse move event, used to keep track of mouse pos.
@@ -24,38 +32,23 @@ function FullScreenControl(onLeft, onRight) {
      */
     var checkMousePos = function (panel, evt) {
         var statement;
-        var fn;
         if (panel.position === 'left') {
             statement = evt.x < panel.intWidth;
-            fn = displayLeftPanel;
         } else if (panel.position === 'right') {
             statement = evt.x > (window.innerWidth - panel.intWidth);
-            fn = displayRightPanel;
         }
-
-        (statement) ? fn(panel, evt.x) : fn(panel, panel.intWidth);
+        // 'statement' define if the mouse position is inside the panel area
+        (statement) ? togglePanel(panel, true) : togglePanel(panel, false);
     };
     /**
-     * calculate right panel pos depending of mousex
+     * 
      * @param {panel{}} panel 
-     * @param {int} mousex - mouse pos x coord 
+     * @param {Boolean} open - open or close 
      */
-    var displayRightPanel = function (panel, mousex) {
-        var mouseDiff = mousex - (window.innerWidth - panel.intWidth);
-        var calcDiff = window.innerWidth - mouseDiff;
-        panel.node.style.left = calcDiff + "px";
-        panel.node.style.zIndex = "2147483647";
+    var togglePanel = function (panel, open) {
+        panel.node.style.left = (open) ? panel.destPos : panel.initPos;
     }
-    /**
-    * calculate left panel pos depending of mousex
-    * @param {panel{}} panel 
-    * @param {int} mousex - mouse pos x coord 
-    */
-    var displayLeftPanel = function (panel, mousex) {
-        var mouseDiff = panel.intWidth - mousex;
-        var calcDiff = (-panel.intWidth) + mouseDiff;
-        panel.node.style.left = calcDiff + 'px';
-    }
+
     /**
      * 
      * @param {panels[{}]} panels - list of panels objects  
@@ -85,16 +78,10 @@ function FullScreenControl(onLeft, onRight) {
         newDiv.appendChild(panel.html);
         newDiv.style.left = initPos;
         panel.node = newDiv;
+        panel.node.classList.add('control-panel')
         // bodyDom.insertAdjacentElement('afterbegin', newDiv);
         bodyDom.appendChild(newDiv);
-        // add event on click panel
-        newDiv.addEventListener('click', function (e) {
-            panel.locked = !panel.locked;
-            if (panel.locked) {
-                panel.node.style.left = destPos;
-            }
-            console.log(panel.locked);
-        });
+
     }
     /**
      * calculate inital and destination value for each panel based on their params
@@ -104,12 +91,16 @@ function FullScreenControl(onLeft, onRight) {
         if (panel.position === 'left') {
             var initpos = "-" + panel.width;
             var destpos = 0;
+            panel.initPos = initpos;
+            panel.destPos = destpos;
             createDomPanel(initpos, destpos, panel);
             return;
         }
         if (panel.position === 'right') {
             var initpos = window.innerWidth;
             var destpos = window.innerWidth - panel.intWidth;
+            panel.initPos = initpos;
+            panel.destPos = destpos;
             createDomPanel(initpos, destpos, panel);
             return;
         }
@@ -144,6 +135,7 @@ function FullScreenControl(onLeft, onRight) {
      * priviledge method, access to private members
      */
     this.startup = function () {
+        addCustomCss()
         initPanel(panels);
         document.addEventListener("mousemove", checkMousePosition);
         window.addEventListener("resize", screenResize(true));
